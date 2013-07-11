@@ -13,7 +13,7 @@ class PluginAmqpConfig extends CommonDBTM
           {
                if ($item->getType () == 'Config')
                {
-                    return __('AMQP plugin');
+                    return 'AMQP plugin';
                }
           }
 
@@ -38,39 +38,39 @@ class PluginAmqpConfig extends CommonDBTM
                <form name="form" action="config.form.php" method="post">
                     <div class="center" id="tabsbody">
                          <table class="tab_cadre_fixe">
-                              <tr><th colspan="4"><?php echo __("AMQP setup"); ?></th></tr>
+                              <tr><th colspan="4">AMQP setup</th></tr>
                               <tr>
-                                   <td><?php echo __('AMQP host'); ?></td>
+                                   <td>AMQP host</td>
                                    <td colspan="3">
                                         <input type="text" name="amqp_hostname" />
                                    </td>
                               </tr>
                               <tr>
-                                   <td><?php echo __('AMQP Port'); ?></td>
+                                   <td>AMQP Port</td>
                                    <td colspan="3">
                                         <input type="text" name="amqp_port" value="5672" />
                                    </td>
                               </tr>
                               <tr>
-                                   <td><?php echo __('AMQP User'); ?></td>
+                                   <td>AMQP User</td>
                                    <td colspan="3">
                                         <input type="text" name="amqp_user" />
                                    </td>
                               </tr>
                               <tr>
-                                   <td><?php echo __('AMQP Password'); ?></td>
+                                   <td>AMQP Password</td>
                                    <td colspan="3">
                                         <input type="password" name="amqp_password" />
                                    </td>
                               </tr>
                               <tr>
-                                   <td><?php echo __('AMQP Virtual Host'); ?></td>
+                                   <td>AMQP Virtual Host</td>
                                    <td colspan="3">
                                         <input type="text" name="amqp_vhost" />
                                    </td>
                               </tr>
                               <tr>
-                                   <td><?php echo __('AMQP Exchange'); ?></td>
+                                   <td>AMQP Exchange</td>
                                    <td colspan="3">
                                         <input type="text" name="amqp_exchange" />
                                    </td>

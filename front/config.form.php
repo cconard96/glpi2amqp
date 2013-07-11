@@ -35,7 +35,7 @@ else
                <img src="<?php echo $CFG_GLPI['root_doc']; ?>/pics/warning.png" alt="warning" />
                <br />
                <br />
-               <b>Merci d'activer le plugin</b>
+               <b>Please activate the plugin</b>
           </div>
      <?php
 
