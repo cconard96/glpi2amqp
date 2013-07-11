@@ -16,8 +16,6 @@ function plugin_init_amqp ()
      {
           $PLUGIN_HOOKS['config_page']['amqp'] = 'front/config.form.php';
      }
-
-
 }
 
 function plugin_version_amqp ()

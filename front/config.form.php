@@ -12,7 +12,7 @@ if ($plugin->isActivated ('amqp'))
      if (isset ($_POST['update']))
      {
           Session::checkRight ('config', 'w');
-          $config->update ($_POST);
+          $config->update ($_POST) or die ("Error while updating configuration.");
           Html::back ();
      }
      else
