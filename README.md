@@ -5,6 +5,8 @@ Connector between GLPI ( http://www.glpi-project.org ) and AMQP.
 Send events on AMQP sockets when tickets are added, updated, deleted, ...
 Some data are sent regularly on the AMQP socket (via the internal Cron of GLPI).
 
+[php-amqplib](http://github.com/videlalvaro/php-amqplib) is used for AMQP communications.
+
 # Installation
 
 In the GLPI root directory :
