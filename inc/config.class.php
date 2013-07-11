@@ -42,37 +42,43 @@ class PluginAmqpConfig extends CommonDBTM
                               <tr>
                                    <td>AMQP host</td>
                                    <td colspan="3">
-                                        <input type="text" name="amqp_hostname" />
+                                        <input type="text" name="host" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Port</td>
                                    <td colspan="3">
-                                        <input type="text" name="amqp_port" value="5672" />
+                                        <input type="text" name="port" value="5672" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP User</td>
                                    <td colspan="3">
-                                        <input type="text" name="amqp_user" />
+                                        <input type="text" name="user" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Password</td>
                                    <td colspan="3">
-                                        <input type="password" name="amqp_password" />
+                                        <input type="password" name="password" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Virtual Host</td>
                                    <td colspan="3">
-                                        <input type="text" name="amqp_vhost" />
+                                        <input type="text" name="vhost" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Exchange</td>
                                    <td colspan="3">
-                                        <input type="text" name="amqp_exchange" />
+                                        <input type="text" name="exchange" />
+                                   </td>
+                              </tr>
+                              <tr>
+                                   <td>Cron Interval</td>
+                                   <td colspan="3">
+                                        <input type="text" name="cron_interval" />
                                    </td>
                               </tr>
                               <tr class="tab_bg_2">
