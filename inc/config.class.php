@@ -42,43 +42,43 @@ class PluginAmqpConfig extends CommonDBTM
                               <tr>
                                    <td>AMQP host</td>
                                    <td colspan="3">
-                                        <input type="text" name="host" value="<?php echo $this->fields['host']; ?>" />
+                                        <input type="text" name="host" value="<?php echo $this->getField ('host'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Port</td>
                                    <td colspan="3">
-                                        <input type="text" name="port" value="<?php echo $this->fields['port']; ?>" />
+                                        <input type="text" name="port" value="<?php echo $this->getField ('port'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP User</td>
                                    <td colspan="3">
-                                        <input type="text" name="user" value="<?php echo $this->fields['user']; ?>" />
+                                        <input type="text" name="user" value="<?php echo $this->getField ('user'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Password</td>
                                    <td colspan="3">
-                                        <input type="password" name="password" value="<?php echo $this->fields['password']; ?>" />
+                                        <input type="password" name="password" value="<?php echo $this->getField ('password'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Virtual Host</td>
                                    <td colspan="3">
-                                        <input type="text" name="vhost" value="<?php echo $this->fields['vhost']; ?>" />
+                                        <input type="text" name="vhost" value="<?php echo $this->getField ('vhost'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>AMQP Exchange</td>
                                    <td colspan="3">
-                                        <input type="text" name="exchange" value="<?php echo $this->fields['exchange']; ?>" />
+                                        <input type="text" name="exchange" value="<?php echo $this->getField ('exchange'); ?>" />
                                    </td>
                               </tr>
                               <tr>
                                    <td>Cron Interval</td>
                                    <td colspan="3">
-                                        <input type="text" name="cron_interval" value="<?php echo $this->fields['cron_interval']; ?>" />
+                                        <input type="text" name="cron_interval" value="<?php echo $this->getField ('cron_interval'); ?>" />
                                    </td>
                               </tr>
                               <tr class="tab_bg_2">

@@ -16,6 +16,9 @@ function plugin_init_amqp ()
      {
           $PLUGIN_HOOKS['config_page']['amqp'] = 'front/config.form.php';
      }
+
+     /* cron */
+     $PLUGIN_HOOKS['cron']['amqp'] = 3600;
 }
 
 function plugin_version_amqp ()
