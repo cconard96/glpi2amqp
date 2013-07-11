@@ -19,6 +19,21 @@ function plugin_amqp_install ()
           ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
           $DB->query ($query) or die ('Error while creating configuration table: '.$DB->error ());
+
+          $query = "INSERT INTO `glpi_plugin_amqp_configs`
+               (`id`, `host`, `port`, `user`, `password`, `vhost`, `exchange`, `cron_interval`)
+          VALUES (
+               NULL,
+               '127.0.0.1',
+               5672,
+               'guest',
+               'guest',
+               'myvhost',
+               'myvhost.events',
+               3600
+          )";
+
+          $DB->query ($query) or die ('Error while creating default configuration: '.$DB->error ());
      }
 
      return true;
