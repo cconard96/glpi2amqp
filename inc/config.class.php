@@ -20,12 +20,12 @@ class PluginAmqpConfig extends CommonDBTM
           return '';
      }
 
-     static function canCreate ()
+     function canCreate ()
      {
           return plugin_amqp_haveRight ('config', 'w');
      }
 
-     static function canView ()
+     function canView ()
      {
           return plugin_amqp_haveRight ('config', 'r');
      }
