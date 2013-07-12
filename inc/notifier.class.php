@@ -5,11 +5,6 @@ if (!defined ('GLPI_ROOT'))
      die ("Sorry. You can't access directly to this file");
 }
 
-require_once (__DIR__.'/../lib/php-amqplib/vendor/autoload.php');
-
-use PhpAmqpLib\Connection\AMQPConnection;
-use PhpAmqpLib\Message\AMQPMessage;
-
 class PluginAmqpNotifier
 {
      static function sendAMQPMessage ($msg_body)
@@ -18,19 +13,26 @@ class PluginAmqpNotifier
           $config = new PluginAmqpConfig ();
           $config->getFromDB (1);
 
-          /* connect to AMQP socket */
-          $conn = new AMQPConnection (
-               $config->getField ('host'),
-               $config->getField ('port'),
-               $config->getField ('user'),
-               $config->getField ('pass'),
-               $config->getField ('vhost')
+          $cred = array (
+               'host'     => $config->getField ('host'),
+               'port'     => $config->getField ('port'),
+               'login'    => $config->getField ('user'),
+               'password' => $config->getField ('password'),
+               'vhost'    => $config->getField ('vhost')
           );
 
-          $channel = $conn->channel ();
+          error_log ("Initialize amqp://".$cred['login']."@".$cred['host'].":".$cred['port']."/".$cred['vhost']."...");
+
+          /* connect to AMQP socket */
+          $conn = new AMQPConnection ($cred);
+          $conn->connect ();
+          $channel = new AMQPChannel ($conn);
 
           /* Declare exchange if not exist */
-          $channel->exchange_declare ($config->getField ('exchange'), 'topic', false, true, false);
+          error_log ("Declare AMQP exchange ".$config->getField ('exchange')."...");
+
+          $ex = new AMQPExchange ($channel);
+          $ex->declare ($config->getField ('exchange'), AMQP_EX_TYPE_FANOUT);
 
           /* build routing key */
           $msg_rk = $msg_body['connector'].".".$msg_body['connector_name'].".".$msg_body['event_type'].".".$msg_body['source_type'].".".$msg_body['component'];
@@ -43,14 +45,19 @@ class PluginAmqpNotifier
           /* generate AMQP message */
           $msg_raw = json_encode ($msg_body);
 
-          $msg = new AMQPMessage ($msg_raw, array ("content-type" => "application/json", "delivery_mode" => 2));
-
           /* publish event */
-          $channel->basic_publish ($msg, $config->getField ('exchange'), $msg_rk);
+          $msg = $ex->publish ($msg_raw, $msg_rk);
 
-          /* close connection */
-          $channel->close ();
-          $conn->close ();
+          if (!$msg)
+          {
+               error_log ("Error: AMQP message '".$msg."' not sent.");
+          }
+          else
+          {
+               error_log ("Success: AMQP message '".$msg."' sent.");
+          }
+
+          $conn->disconnect ();
      }
 
      static function add_item (CommonDBTM $item)
