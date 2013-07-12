@@ -6,11 +6,11 @@ function plugin_init_amqp ()
 
      Plugin::registerClass ('PluginAmqpConfig', array ('addtabon' => 'Config'));
 
-     $PLUGIN_HOOKS['pre_item_add']['amqp']     = array ('Ticket' => 'plugin_pre_item_add_amqp');
-     $PLUGIN_HOOKS['pre_item_update']['amqp']  = array ('Ticket' => 'plugin_pre_item_update_amqp');
-     $PLUGIN_HOOKS['pre_item_delete']['amqp']  = array ('Ticket' => 'plugin_pre_item_delete_amqp');
-     $PLUGIN_HOOKS['pre_item_purge']['amqp']   = array ('Ticket' => 'plugin_pre_item_purge_amqp');
-     $PLUGIN_HOOKS['pre_item_restore']['amqp'] = array ('Ticket' => 'plugin_pre_item_restore_amqp');
+     $PLUGIN_HOOKS['item_add']['amqp']     = array ('Ticket' => 'plugin_item_add_amqp');
+     $PLUGIN_HOOKS['item_update']['amqp']  = array ('Ticket' => 'plugin_item_update_amqp');
+     $PLUGIN_HOOKS['item_delete']['amqp']  = array ('Ticket' => 'plugin_item_delete_amqp');
+     $PLUGIN_HOOKS['item_purge']['amqp']   = array ('Ticket' => 'plugin_item_purge_amqp');
+     $PLUGIN_HOOKS['item_restore']['amqp'] = array ('Ticket' => 'plugin_item_restore_amqp');
 
      if (Session::haveRight ("config", "w"))
      {
@@ -18,7 +18,7 @@ function plugin_init_amqp ()
      }
 
      /* cron */
-     $PLUGIN_HOOKS['cron']['amqp'] = 3600;
+     $PLUGIN_HOOKS['cron']['amqp'] = 5 * MINUTE_TIMESTAMP;
 }
 
 function plugin_version_amqp ()

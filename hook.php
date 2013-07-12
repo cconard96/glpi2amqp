@@ -30,7 +30,7 @@ function plugin_amqp_install ()
                'guest',
                'myvhost',
                'myvhost.events',
-               3600
+               ".HOUR_TIMESTAMP."
           )";
 
           $DB->query ($query) or die ('Error while creating default configuration: '.$DB->error ());
@@ -141,7 +141,7 @@ function cron_plugin_amqp ()
      }
 }
 
-function plugin_pre_item_add_amqp ($item)
+function plugin_item_add_amqp ($item)
 {
      if ($item instanceof Ticket)
      {
@@ -149,7 +149,7 @@ function plugin_pre_item_add_amqp ($item)
      }
 }
 
-function plugin_pre_item_update_amqp ($item)
+function plugin_item_update_amqp ($item)
 {
      if ($item instanceof Ticket)
      {
@@ -157,7 +157,7 @@ function plugin_pre_item_update_amqp ($item)
      }
 }
 
-function plugin_pre_item_delete_amqp ($item)
+function plugin_item_delete_amqp ($item)
 {
      if ($item instanceof Ticket)
      {
@@ -165,7 +165,7 @@ function plugin_pre_item_delete_amqp ($item)
      }
 }
 
-function plugin_pre_item_purge_amqp ($item)
+function plugin_item_purge_amqp ($item)
 {
      if ($item instanceof Ticket)
      {
@@ -173,7 +173,7 @@ function plugin_pre_item_purge_amqp ($item)
      }
 }
 
-function plugin_pre_item_restore_amqp ($item)
+function plugin_item_restore_amqp ($item)
 {
      if ($item instanceof Ticket)
      {

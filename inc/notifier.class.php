@@ -5,7 +5,7 @@ if (!defined ('GLPI_ROOT'))
      die ("Sorry. You can't access directly to this file");
 }
 
-require_once ('../lib/php-amqplib/vendor/autoload.php');
+require_once (__DIR__.'/../lib/php-amqplib/vendor/autoload.php');
 
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -24,7 +24,7 @@ class PluginAmqpNotifier
                $config->getField ('port'),
                $config->getField ('user'),
                $config->getField ('pass'),
-               $config->getField ('vhost');
+               $config->getField ('vhost')
           );
 
           $channel = $conn->channel ();
@@ -55,6 +55,20 @@ class PluginAmqpNotifier
 
      static function add_item (CommonDBTM $item)
      {
+          $event = array (
+               "connector"      => "glpi",
+               "connector_name" => "glpi2amqp",
+               "component"      => "glpi",
+               "resource"       => "notifier",
+               "source_type"    => "resource",
+               "timestamp"      => time (),
+               "event_type"     => "log",
+               "state"          => 0,
+               "output"         => "Add item #".$item->getField ("id"),
+               "long_output"    => $item->getField ("content")
+          );
+
+          PluginAmqpNotifier::sendAMQPMessage ($event);
      }
 
      static function update_item (CommonDBTM $item)
