@@ -32,7 +32,10 @@ class PluginAmqpNotifier
           error_log ("Declare AMQP exchange ".$config->getField ('exchange')."...");
 
           $ex = new AMQPExchange ($channel);
-          $ex->declare ($config->getField ('exchange'), AMQP_EX_TYPE_FANOUT);
+          $ex->setName ($config->getField ('exchange'));
+          $ex->setType (AMQP_EX_TYPE_TOPIC);
+          $ex->setFlags (AMQP_PASSIVE);
+          $ex->declareExchange ();
 
           /* build routing key */
           $msg_rk = $msg_body['connector'].".".$msg_body['connector_name'].".".$msg_body['event_type'].".".$msg_body['source_type'].".".$msg_body['component'];
@@ -46,6 +49,8 @@ class PluginAmqpNotifier
           $msg_raw = json_encode ($msg_body);
 
           /* publish event */
+          error_log ("Send AMQP message #".$msg_rk.": ".$msg_raw);
+
           $msg = $ex->publish ($msg_raw, $msg_rk);
 
           if (!$msg)
@@ -71,6 +76,7 @@ class PluginAmqpNotifier
                "timestamp"      => time (),
                "event_type"     => "log",
                "state"          => 0,
+               "display_name"   => "GLPI 2 AMQP",
                "output"         => "Add item #".$item->getField ("id"),
                "long_output"    => $item->getField ("content")
           );
