@@ -159,4 +159,93 @@ class PluginAmqpNotifier
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
+
+     static function statistics ()
+     {
+          global $DB;
+
+          $query = "SELECT
+               status,
+               COUNT(*) AS total,
+               AVG(TIME_TO_SEC(TIMEDIFF(`closedate`, `date`))) AS avgtime
+          FROM
+               ".getTableForItemType ('Ticket')."
+          GROUP BY `status`";
+
+          /* This query will group all tickets by status, count how many items there
+           * are in each groups, and calculate the average time passed on closed tickets.
+           *
+           * Result :
+           *
+           *  +--------+-------+-----------+
+           *  | status | total |  avgtime  |
+           *  +--------+-------+-----------+
+           *  | assign |   6   |    NULL   |
+           *  +--------+-------+-----------+
+           *  | closed |  1975 | 634542.08 |
+           *  +--------+-------+-----------+
+           */
+
+          $result = $DB->query ($query);
+
+          if ($result)
+          {
+               /* build event for AMQP message */
+               $event = array (
+                    "connector"       => "glpi",
+                    "connector_name"  => "glpi2amqp",
+                    "component"       => "glpi",
+                    "resource"        => "stats",
+                    "timestamp"       => time (),
+                    "source_type"     => "resource",
+                    "event_type"      => "log",
+                    "state"           => 0,
+                    "perf_data_array" => array ()
+               );
+
+               /* loop over all returned rows to build the metrics */
+               while ($row = mysql_fetch_assoc ($result))
+               {
+                    switch ($row['status'])
+                    {
+                         case 'closed':
+                              /* send average time only if the ticket is closed */
+
+                              $event['perf_data_array'][] = array (
+                                   "metric" => "tickets_time_avg",
+                                   "value"  => int ($row['avgtime']),
+                                   "unit"   => "s",
+                                   "min"    => 0,
+                                   "max"    => NULL,
+                                   "warn"   => NULL,
+                                   "crit"   => NULL,
+                                   "type"   => "GAUGE"
+                              );
+
+                         default:
+                              /* add the number of tickets in the group */
+                              $event['perf_data_array'][] = array (
+                                   "metric" => "n_tickets_".$row['status'],
+                                   "value"  => int ($row['total']),
+                                   "unit"   => NULL,
+                                   "min"    => 0,
+                                   "max"    => NULL,
+                                   "warn"   => NULL,
+                                   "crit"   => NULL,
+                                   "type"   => "GAUGE"
+                              );
+
+                              break;
+                    }
+               }
+
+               /* now send the event */
+               PluginAmqpNotifier::sendAMQPMessage ($event);
+          }
+          else
+          {
+               /* log possible error */
+               error_log ("Error while getting data from database: ".$DB->error ());
+          }
+     }
 }

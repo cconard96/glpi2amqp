@@ -75,12 +75,6 @@ class PluginAmqpConfig extends CommonDBTM
                                         <input type="text" name="exchange" value="<?php echo $this->getField ('exchange'); ?>" />
                                    </td>
                               </tr>
-                              <tr>
-                                   <td>Cron Interval</td>
-                                   <td colspan="3">
-                                        <input type="text" name="cron_interval" value="<?php echo $this->getField ('cron_interval'); ?>" />
-                                   </td>
-                              </tr>
                               <tr class="tab_bg_2">
                                    <td colspan="4" class="center">
                                         <input type="hidden" name="id" value="1" class="submit" />

@@ -15,9 +15,6 @@ if ($plugin->isActivated ('amqp'))
           Session::checkRight ('config', 'w');
           $config->update ($_POST) or die ("Error while updating configuration.");
           Html::back ();
-
-          /* update cron interval */
-          $PLUGIN_HOOKS['cron']['amqp'] = $config->getField ('cron_interval');
      }
      else
      {

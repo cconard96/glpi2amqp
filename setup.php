@@ -6,19 +6,16 @@ function plugin_init_amqp ()
 
      Plugin::registerClass ('PluginAmqpConfig', array ('addtabon' => 'Config'));
 
-     $PLUGIN_HOOKS['item_add']['amqp']     = array ('Ticket' => 'plugin_item_add_amqp');
-     $PLUGIN_HOOKS['item_update']['amqp']  = array ('Ticket' => 'plugin_item_update_amqp');
-     $PLUGIN_HOOKS['item_delete']['amqp']  = array ('Ticket' => 'plugin_item_delete_amqp');
-     $PLUGIN_HOOKS['item_purge']['amqp']   = array ('Ticket' => 'plugin_item_purge_amqp');
-     $PLUGIN_HOOKS['item_restore']['amqp'] = array ('Ticket' => 'plugin_item_restore_amqp');
+     $PLUGIN_HOOKS['item_add']['amqp']     = 'plugin_amqp_item_add';
+     $PLUGIN_HOOKS['item_update']['amqp']  = 'plugin_amqp_item_update';
+     $PLUGIN_HOOKS['item_delete']['amqp']  = 'plugin_amqp_item_delete';
+     $PLUGIN_HOOKS['item_purge']['amqp']   = 'plugin_amqp_item_purge';
+     $PLUGIN_HOOKS['item_restore']['amqp'] = 'plugin_amqp_item_restore';
 
      if (Session::haveRight ("config", "w"))
      {
           $PLUGIN_HOOKS['config_page']['amqp'] = 'front/config.form.php';
      }
-
-     /* cron */
-     $PLUGIN_HOOKS['cron']['amqp'] = 5 * MINUTE_TIMESTAMP;
 }
 
 function plugin_version_amqp ()
