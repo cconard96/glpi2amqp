@@ -5,12 +5,13 @@ function plugin_init_amqp ()
      global $PLUGIN_HOOKS;
 
      Plugin::registerClass ('PluginAmqpConfig', array ('addtabon' => 'Config'));
+     Plugin::registerClass ('PluginAmqpNotifier');
 
-     $PLUGIN_HOOKS['item_add']['amqp']     = 'plugin_amqp_item_add';
-     $PLUGIN_HOOKS['item_update']['amqp']  = 'plugin_amqp_item_update';
-     $PLUGIN_HOOKS['item_delete']['amqp']  = 'plugin_amqp_item_delete';
-     $PLUGIN_HOOKS['item_purge']['amqp']   = 'plugin_amqp_item_purge';
-     $PLUGIN_HOOKS['item_restore']['amqp'] = 'plugin_amqp_item_restore';
+     $PLUGIN_HOOKS['item_add']['amqp']     = array ('Ticket' => 'plugin_amqp_item_add');
+     $PLUGIN_HOOKS['item_update']['amqp']  = array ('Ticket' => 'plugin_amqp_item_update');
+     $PLUGIN_HOOKS['item_delete']['amqp']  = array ('Ticket' => 'plugin_amqp_item_delete');
+     $PLUGIN_HOOKS['item_purge']['amqp']   = array ('Ticket' => 'plugin_amqp_item_purge');
+     $PLUGIN_HOOKS['item_restore']['amqp'] = array ('Ticket' => 'plugin_amqp_item_restore');
 
      if (Session::haveRight ("config", "w"))
      {

@@ -213,7 +213,7 @@ class PluginAmqpNotifier
 
                               $event['perf_data_array'][] = array (
                                    "metric" => "tickets_time_avg",
-                                   "value"  => int ($row['avgtime']),
+                                   "value"  => (int) ($row['avgtime']),
                                    "unit"   => "s",
                                    "min"    => 0,
                                    "max"    => NULL,
@@ -226,7 +226,7 @@ class PluginAmqpNotifier
                               /* add the number of tickets in the group */
                               $event['perf_data_array'][] = array (
                                    "metric" => "n_tickets_".$row['status'],
-                                   "value"  => int ($row['total']),
+                                   "value"  => (int) ($row['total']),
                                    "unit"   => NULL,
                                    "min"    => 0,
                                    "max"    => NULL,
