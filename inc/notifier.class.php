@@ -24,46 +24,54 @@ class PluginAmqpNotifier
           error_log ("Initialize amqp://".$cred['login']."@".$cred['host'].":".$cred['port']."/".$cred['vhost']."...");
 
           /* connect to AMQP socket */
-          $conn = new AMQPConnection ($cred);
-          $conn->connect ();
-          $channel = new AMQPChannel ($conn);
-
-          /* Declare exchange if not exist */
-          error_log ("Declare AMQP exchange ".$config->getField ('exchange')."...");
-
-          $ex = new AMQPExchange ($channel);
-          $ex->setName ($config->getField ('exchange'));
-          $ex->setType (AMQP_EX_TYPE_TOPIC);
-          $ex->setFlags (AMQP_PASSIVE);
-          $ex->declareExchange ();
-
-          /* build routing key */
-          $msg_rk = $msg_body['connector'].".".$msg_body['connector_name'].".".$msg_body['event_type'].".".$msg_body['source_type'].".".$msg_body['component'];
-
-          if ($msg_body['source_type'] == 'resource')
+          try
           {
-               $msg_rk .= ".".$msg_body['resource'];
+               $conn = new AMQPConnection ($cred);
+               $conn->connect ();
+               $channel = new AMQPChannel ($conn);
+
+               /* Declare exchange if not exist */
+               error_log ("Declare AMQP exchange ".$config->getField ('exchange')."...");
+
+               $ex = new AMQPExchange ($channel);
+               $ex->setName ($config->getField ('exchange'));
+               $ex->setType (AMQP_EX_TYPE_TOPIC);
+               $ex->setFlags (AMQP_PASSIVE);
+               $ex->declareExchange ();
+
+               /* build routing key */
+               $msg_rk = $msg_body['connector'].".".$msg_body['connector_name'].".".$msg_body['event_type'].".".$msg_body['source_type'].".".$msg_body['component'];
+
+               if ($msg_body['source_type'] == 'resource')
+               {
+                    $msg_rk .= ".".$msg_body['resource'];
+               }
+
+               /* generate AMQP message */
+               $msg_raw = json_encode ($msg_body);
+
+               /* publish event */
+               error_log ("Send AMQP message #".$msg_rk.": ".$msg_raw);
+
+               $msg = $ex->publish ($msg_raw, $msg_rk);
+
+               if (!$msg)
+               {
+                    error_log ("Error: AMQP message '".$msg."' not sent.");
+                    return false;
+               }
+               else
+               {
+                    error_log ("Success: AMQP message '".$msg."' sent.");
+               }
+
+               $conn->disconnect ();
           }
-
-          /* generate AMQP message */
-          $msg_raw = json_encode ($msg_body);
-
-          /* publish event */
-          error_log ("Send AMQP message #".$msg_rk.": ".$msg_raw);
-
-          $msg = $ex->publish ($msg_raw, $msg_rk);
-
-          if (!$msg)
+          catch (AMQPException $e)
           {
-               error_log ("Error: AMQP message '".$msg."' not sent.");
+               error_log ("Error AMQP: ".$e->getMessage ());
                return false;
           }
-          else
-          {
-               error_log ("Success: AMQP message '".$msg."' sent.");
-          }
-
-          $conn->disconnect ();
 
           return true;
      }
