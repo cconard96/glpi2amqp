@@ -8,7 +8,7 @@ $messages = PluginAmqpBuffer::get_events ();
 
 foreach ($messages as $id => $row)
 {
-     $message = json_decode ($row['msg']);
+     $message = json_decode ($row['msg'], TRUE);
 
      /* try to send it again on AMQP */
      if (PluginAmqpNotifier::sendAMQPMessage ($message))
