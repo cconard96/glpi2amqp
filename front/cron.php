@@ -4,19 +4,16 @@ define ('GLPI_ROOT', __DIR__.'/../../..');
 include (GLPI_ROOT.'/inc/includes.php');
 
 /* get all buffered message */
-$buffer = new PluginAmqpBuffer ();
-$buffers = $buffer->find ();
+$messages = PluginAmqpBuffer::get_events ();
 
-foreach ($buffers as $row)
+foreach ($messages as $id => $row)
 {
-     $buf = $buffer->getFromDB ($row['id']);
+     $message = json_decode ($row['msg']);
 
-     /* send message */
-     $event = json_decode ($buf->getField ('msg'));
-
-     if (PluginAmqpNotifier::sendAMQPMessage ($event))
+     /* try to send it again on AMQP */
+     if (PluginAmqpNotifier::sendAMQPMessage ($message))
      {
-          /* if the message was sent, delete it from the buffer */
-          $buf->deleteFromDB ();
+          /* if succeed, drop it from database */
+          PluginAmqpBuffer::delete_event ($message);
      }
 }
