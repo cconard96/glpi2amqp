@@ -9,6 +9,8 @@ class PluginAmqpBuffer
 {
      static function get_events ()
      {
+          global $DB;
+
           $query = "SELECT * FROM glpi_plugin_amqp_buffer";
 
           $sqlres = $DB->query ($query) or die ("Can't retrieve messages in database: ".$DB->error ());
@@ -25,6 +27,8 @@ class PluginAmqpBuffer
 
      static function delete_event ($msg)
      {
+          global $DB;
+          
           $query = "DELETE FROM glpi_plugin_amqp_buffer WHERE id = ".$msg['id'];
           $DB->query ($query) or die ("Can't delete message in database: ".$DB->error ()."<br/><pre>".$msg['msg']."</pre>");
      }
