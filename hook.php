@@ -52,8 +52,6 @@ function plugin_amqp_uninstall ()
 
 function plugin_amqp_item_add ($item)
 {
-     PluginAmqpNotifier::statistics ();
-
      if ($item instanceof Ticket)
      {
           return PluginAmqpNotifier::add_item ($item);
@@ -62,8 +60,6 @@ function plugin_amqp_item_add ($item)
 
 function plugin_amqp_item_update ($item)
 {
-     PluginAmqpNotifier::statistics ();
-
      if ($item instanceof Ticket)
      {
           return PluginAmqpNotifier::update_item ($item);
@@ -72,8 +68,6 @@ function plugin_amqp_item_update ($item)
 
 function plugin_amqp_item_delete ($item)
 {
-     PluginAmqpNotifier::statistics ();
-
      if ($item instanceof Ticket)
      {
           return PluginAmqpNotifier::delete_item ($item);
@@ -82,8 +76,6 @@ function plugin_amqp_item_delete ($item)
 
 function plugin_amqp_item_purge ($item)
 {
-     PluginAmqpNotifier::statistics ();
-
      if ($item instanceof Ticket)
      {
           return PluginAmqpNotifier::purge_item ($item);
@@ -92,8 +84,6 @@ function plugin_amqp_item_purge ($item)
 
 function plugin_amqp_item_restore ($item)
 {
-     PluginAmqpNotifier::statistics ();
-
      if ($item instanceof Ticket)
      {
           return PluginAmqpNotifier::restore_item ($item);
