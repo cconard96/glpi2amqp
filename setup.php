@@ -6,6 +6,7 @@ function plugin_init_amqp ()
 
      Plugin::registerClass ('PluginAmqpConfig', array ('addtabon' => 'Config'));
      Plugin::registerClass ('PluginAmqpNotifier');
+     Plugin::registerClass ('PluginAmqpBuffer');
 
      $PLUGIN_HOOKS['item_add']['amqp']     = array ('Ticket' => 'plugin_amqp_item_add');
      $PLUGIN_HOOKS['item_update']['amqp']  = array ('Ticket' => 'plugin_amqp_item_update');

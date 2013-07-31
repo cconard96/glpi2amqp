@@ -56,6 +56,7 @@ class PluginAmqpNotifier
           if (!$msg)
           {
                error_log ("Error: AMQP message '".$msg."' not sent.");
+               return false;
           }
           else
           {
@@ -63,6 +64,8 @@ class PluginAmqpNotifier
           }
 
           $conn->disconnect ();
+
+          return true;
      }
 
      static function item_to_event (CommonDBTM $item)
@@ -94,7 +97,10 @@ class PluginAmqpNotifier
           $event = PluginAmqpNotifier::item_to_event ($item);
           $event["output"] = "Add item";
 
-          PluginAmqpNotifier::sendAMQPMessage ($event);
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
      }
 
      static function update_item (CommonDBTM $item)
@@ -102,7 +108,10 @@ class PluginAmqpNotifier
           $event = PluginAmqpNotifier::item_to_event ($item);
           $event["output"] = "Update item";
 
-          PluginAmqpNotifier::sendAMQPMessage ($event);
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
      }
 
      static function delete_item (CommonDBTM $item)
@@ -110,7 +119,10 @@ class PluginAmqpNotifier
           $event = PluginAmqpNotifier::item_to_event ($item);
           $event["output"] = "Delete item";
 
-          PluginAmqpNotifier::sendAMQPMessage ($event);
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
      }
 
      static function purge_item (CommonDBTM $item)
@@ -118,7 +130,10 @@ class PluginAmqpNotifier
           $event = PluginAmqpNotifier::item_to_event ($item);
           $event["output"] = "Purge item";
 
-          PluginAmqpNotifier::sendAMQPMessage ($event);
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
      }
 
      static function restore_item (CommonDBTM $item)
@@ -126,7 +141,10 @@ class PluginAmqpNotifier
           $event = PluginAmqpNotifier::item_to_event ($item);
           $event["output"] = "Restore item";
 
-          PluginAmqpNotifier::sendAMQPMessage ($event);
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
      }
 
      static function statistics ()
@@ -173,7 +191,7 @@ class PluginAmqpNotifier
                );
 
                /* loop over all returned rows to build the metrics */
-               while ($row = mysql_fetch_assoc ($result))
+               while ($row = $DB->fetch_assoc ($result))
                {
                     switch ($row['status'])
                     {
@@ -209,7 +227,10 @@ class PluginAmqpNotifier
                }
 
                /* now send the event */
-               PluginAmqpNotifier::sendAMQPMessage ($event);
+               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+               {
+                    PluginAmqpBuffer::save_event ($event);
+               }
           }
           else
           {

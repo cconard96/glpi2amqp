@@ -34,6 +34,17 @@ function plugin_amqp_install ()
           $DB->query ($query) or die ('Error while creating default configuration: '.$DB->error ());
      }
 
+     if (!TableExists ('glpi_plugin_amqp_buffer'))
+     {
+          $query = "CREATE TABLE `glpi_plugin_amqp_buffer` (
+               `id` INT(11) NOT NULL auto_increment,
+               `msg` TEXT NOT NULL,
+               PRIMARY KEY (`id`)
+          ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+          $DB->query ($query) or die ('Error while creating buffer table: '.$DB->error ());
+     }
+
      return true;
 }
 
@@ -45,6 +56,12 @@ function plugin_amqp_uninstall ()
      {
           $query = "DROP TABLE `glpi_plugin_amqp_configs`";
           $DB->query ($query) or die ('Error while cleaning configuration table: '.$DB->error ());
+     }
+
+     if (TableExists ('glpi_plugin_amqp_buffer'))
+     {
+          $query = "DROP TABLE `glpi_plugin_amqp_buffer`";
+          $DB->query ($query) or die ('Error while cleaning buffer table: '.$DB->error ());
      }
 
      return true;
