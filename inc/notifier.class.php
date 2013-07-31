@@ -65,97 +65,66 @@ class PluginAmqpNotifier
           $conn->disconnect ();
      }
 
-     static function add_item (CommonDBTM $item)
+     static function item_to_event (CommonDBTM $item)
      {
           $event = array (
                "connector"      => "glpi",
                "connector_name" => "glpi2amqp",
                "component"      => "glpi",
-               "resource"       => "notifier",
+               "resource"       => "item".$item->getField ("id"),
                "source_type"    => "resource",
                "timestamp"      => time (),
                "event_type"     => "log",
                "state"          => 0,
-               "display_name"   => "GLPI 2 AMQP",
-               "output"         => "Add item #".$item->getField ("id")." (".$item->getField ("status").")",
-               "long_output"    => $item->getField ("content")
+               "display_name"   => $item->getField ("name"),
+               "item_data"      => array (
+                    "id"        => $item->getField ("id"),
+                    "name"      => $item->getField ("name"),
+                    "status"    => $item->getField ("status"),
+                    "content"   => $item->getField ("content"),
+                    "urgency"   => $item->getField ("urgency")
+               )
           );
+
+          return $event;
+     }
+
+     static function add_item (CommonDBTM $item)
+     {
+          $event = PluginAmqpNotifier::item_to_event ($item);
+          $event["output"] = "Add item";
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
 
      static function update_item (CommonDBTM $item)
      {
-          $event = array (
-               "connector"      => "glpi",
-               "connector_name" => "glpi2amqp",
-               "component"      => "glpi",
-               "resource"       => "notifier",
-               "source_type"    => "resource",
-               "timestamp"      => time (),
-               "event_type"     => "log",
-               "state"          => 0,
-               "display_name"   => "GLPI 2 AMQP",
-               "output"         => "Update item #".$item->getField ("id")." (".$item->getField ("status").")",
-               "long_output"    => $item->getField ("content")
-          );
+          $event = PluginAmqpNotifier::item_to_event ($item);
+          $event["output"] = "Update item";
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
 
      static function delete_item (CommonDBTM $item)
      {
-          $event = array (
-               "connector"      => "glpi",
-               "connector_name" => "glpi2amqp",
-               "component"      => "glpi",
-               "resource"       => "notifier",
-               "source_type"    => "resource",
-               "timestamp"      => time (),
-               "event_type"     => "log",
-               "state"          => 0,
-               "display_name"   => "GLPI 2 AMQP",
-               "output"         => "Delete item #".$item->getField ("id")." (".$item->getField ("status").")",
-               "long_output"    => $item->getField ("content")
-          );
+          $event = PluginAmqpNotifier::item_to_event ($item);
+          $event["output"] = "Delete item";
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
 
      static function purge_item (CommonDBTM $item)
      {
-          $event = array (
-               "connector"      => "glpi",
-               "connector_name" => "glpi2amqp",
-               "component"      => "glpi",
-               "resource"       => "notifier",
-               "source_type"    => "resource",
-               "timestamp"      => time (),
-               "event_type"     => "log",
-               "state"          => 0,
-               "display_name"   => "GLPI 2 AMQP",
-               "output"         => "Purge item #".$item->getField ("id")." (".$item->getField ("status").")",
-               "long_output"    => $item->getField ("content")
-          );
+          $event = PluginAmqpNotifier::item_to_event ($item);
+          $event["output"] = "Purge item";
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
 
      static function restore_item (CommonDBTM $item)
      {
-          $event = array (
-               "connector"      => "glpi",
-               "connector_name" => "glpi2amqp",
-               "component"      => "glpi",
-               "resource"       => "notifier",
-               "source_type"    => "resource",
-               "timestamp"      => time (),
-               "event_type"     => "log",
-               "state"          => 0,
-               "display_name"   => "GLPI 2 AMQP",
-               "output"         => "Restore item #".$item->getField ("id")." (".$item->getField ("status").")",
-               "long_output"    => $item->getField ("content")
-          );
+          $event = PluginAmqpNotifier::item_to_event ($item);
+          $event["output"] = "Restore item";
 
           PluginAmqpNotifier::sendAMQPMessage ($event);
      }
