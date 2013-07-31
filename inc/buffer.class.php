@@ -28,9 +28,9 @@ class PluginAmqpBuffer
      static function delete_event ($msg)
      {
           global $DB;
-          
+
           $query = "DELETE FROM glpi_plugin_amqp_buffer WHERE id = ".$msg['id'];
-          $DB->query ($query) or die ("Can't delete message in database: ".$DB->error ()."<br/><pre>".$msg['msg']."</pre>");
+          $DB->query ($query) or die ("Can't delete message #".$msg['id']." in database: ".$DB->error ());
      }
 
      static function save_event ($event)
@@ -40,6 +40,6 @@ class PluginAmqpBuffer
           $msg = json_encode ($event);
 
           $query = "INSERT INTO glpi_plugin_amqp_buffer (`msg`) VALUES ('".$msg."')";
-          $DB->query ($query) or die ("Can't save message to database: ".$DB->error ()."<br/><pre>".$msg."</pre>");
+          $DB->query ($query) or die ("Can't save message #".$msg['id']." to database: ".$DB->error ());
      }
 }

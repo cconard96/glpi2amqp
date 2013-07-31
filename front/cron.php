@@ -14,6 +14,6 @@ foreach ($messages as $id => $row)
      if (PluginAmqpNotifier::sendAMQPMessage ($message))
      {
           /* if succeed, drop it from database */
-          PluginAmqpBuffer::delete_event ($message);
+          PluginAmqpBuffer::delete_event ($row);
      }
 }
