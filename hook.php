@@ -75,6 +75,37 @@ function plugin_amqp_item_add ($item)
      {
           return PluginAmqpNotifier::add_item ($item);
      }
+     else if ($item instanceof Ticket_User)
+     {
+          /* get user */
+          $finder = new User ();
+          $user   = $finder->find ("id = ".$item->getField ('users_id'))[0];
+
+          $event = array (
+               "connector"       => "glpi",
+               "connector_name"  => "glpi2amqp",
+               "component"       => $user['name'],
+               "source_type"     => "component",
+               "event_type"      => "log",
+               "timestamp"       => time (),
+               "state"           => 0,
+               "perf_data_array" => array (
+                    "metric" => "ticket",
+                    "value"  => $item->getField ('tickets_id'),
+                    "unit"   => NULL,
+                    "min"    => 0,
+                    "max"    => NULL,
+                    "warn"   => NULL,
+                    "crit"   => NULL,
+                    "type"   => "COUNTER"
+               )
+          );
+
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
+     }
 }
 
 function plugin_amqp_item_update ($item)

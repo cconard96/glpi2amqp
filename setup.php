@@ -8,7 +8,11 @@ function plugin_init_amqp ()
      Plugin::registerClass ('PluginAmqpNotifier');
      Plugin::registerClass ('PluginAmqpBuffer');
 
-     $PLUGIN_HOOKS['item_add']['amqp']     = array ('Ticket' => 'plugin_amqp_item_add');
+     $PLUGIN_HOOKS['item_add']['amqp']     = array (
+          'Ticket'      => 'plugin_amqp_item_add',
+          'Ticket_User' => 'plugin_amqp_item_add'
+     );
+
      $PLUGIN_HOOKS['item_update']['amqp']  = array ('Ticket' => 'plugin_amqp_item_update');
      $PLUGIN_HOOKS['item_delete']['amqp']  = array ('Ticket' => 'plugin_amqp_item_delete');
      $PLUGIN_HOOKS['item_purge']['amqp']   = array ('Ticket' => 'plugin_amqp_item_purge');
