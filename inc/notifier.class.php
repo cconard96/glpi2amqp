@@ -82,10 +82,12 @@ class PluginAmqpNotifier
           $results = $finder->find ("tickets_id = ".$item->getField ("id")." AND type = ".$type);
           $users   = array ();
 
-          for ($results as $id => $row)
+          foreach ($results as $id => $row)
           {
-               $ufinder = new User ();
-               $users[] = $ufinder->find ("id = ".$row['users_id'])[0];
+               $user = new User ();
+               $user->getFromDB ($row['users_id']);
+
+               $users[] = $user;
           }
 
           return $users;

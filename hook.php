@@ -78,13 +78,13 @@ function plugin_amqp_item_add ($item)
      else if ($item instanceof Ticket_User)
      {
           /* get user */
-          $finder = new User ();
-          $user   = $finder->find ("id = ".$item->getField ('users_id'))[0];
+          $user = new User ();
+          $user->getFromDB ($item->getField ('users_id'));
 
           $event = array (
                "connector"       => "glpi",
                "connector_name"  => "glpi2amqp",
-               "component"       => $user['name'],
+               "component"       => $user->getField ('name'),
                "source_type"     => "component",
                "event_type"      => "log",
                "timestamp"       => time (),
