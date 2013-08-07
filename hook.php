@@ -86,15 +86,20 @@ function plugin_amqp_item_add ($item)
                "event_type"      => "log",
                "timestamp"       => time (),
                "state"           => 0,
+               "output"          => "Client ".$user->getField ('name')." associated",
+               "long_output"     => "Client ".$user->getField ('name')." associated",
+               "display_name"    => "Client ".$user->getField ('name')." associated",
                "perf_data_array" => array (
-                    "metric" => "ticket",
-                    "value"  => $item->getField ('tickets_id'),
-                    "unit"   => NULL,
-                    "min"    => 0,
-                    "max"    => NULL,
-                    "warn"   => NULL,
-                    "crit"   => NULL,
-                    "type"   => "COUNTER"
+                    array (
+                         "metric" => "ticket",
+                         "value"  => 1,
+                         "unit"   => NULL,
+                         "min"    => 0,
+                         "max"    => NULL,
+                         "warn"   => NULL,
+                         "crit"   => NULL,
+                         "type"   => "COUNTER"
+                    )
                )
           );
 
@@ -102,18 +107,6 @@ function plugin_amqp_item_add ($item)
           {
                PluginAmqpBuffer::save_event ($event);
           }
-
-          /* now send event *
-          $ticket = new Ticket ();
-          $ticket->getFromDB ($item->getField ('tickets_id'));
-
-          $event = PluginAmqpNotifier::item_to_event ($user->getField ("name"), $ticket);
-          $event['output'] = 'Add item #'.$ticket->getID ();
-
-          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-          {
-               PluginAmqpBuffer::save_event ($event);
-          }*/
      }
 }
 
