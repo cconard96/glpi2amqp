@@ -76,28 +76,12 @@ class PluginAmqpNotifier
           return true;
      }
 
-     static function get_item_users (CommonDBTM $item, $type)
-     {
-          $finder  = new Ticket_User ();
-          $results = $finder->find ("tickets_id = ".$item->getField ("id")." AND type = ".$type);
-          $users   = array ();
-
-          foreach ($results as $id => $row)
-          {
-               $user = new User ();
-               $user->getFromDB ($row['users_id']);
-
-               $users[] = $user;
-          }
-
-          return $users;
-     }
-
-     static function item_to_event (CommonDBTM $item)
+     static function item_to_event (CommonDBTM $user, CommonDBTM $item)
      {
           $event = array (
                "connector"      => "glpi",
                "connector_name" => "glpi2amqp",
+               "component"      => $user,
                "resource"       => "item".$item->getField ("id"),
                "source_type"    => "resource",
                "timestamp"      => time (),
@@ -114,96 +98,6 @@ class PluginAmqpNotifier
           );
 
           return $event;
-     }
-
-     static function add_item (CommonDBTM $item)
-     {
-          $users = PluginAmqpNotifier::get_item_users ($item, 1);
-
-          /* send event */
-          foreach ($users as $user)
-          {
-               $event = PluginAmqpNotifier::item_to_event ($item);
-               $event["component"] = $user["name"];
-               $event["output"]    = "Add item";
-
-               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-               {
-                    PluginAmqpBuffer::save_event ($event);
-               }
-          }
-     }
-
-     static function update_item (CommonDBTM $item)
-     {
-          $users = PluginAmqpNotifier::get_item_users ($item, 1);
-
-          /* send event */
-          foreach ($users as $user)
-          {
-               $event = PluginAmqpNotifier::item_to_event ($item);
-               $event["component"] = $user["name"];
-               $event["output"]    = "Add item";
-
-               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-               {
-                    PluginAmqpBuffer::save_event ($event);
-               }
-          }
-     }
-
-     static function delete_item (CommonDBTM $item)
-     {
-          $users = PluginAmqpNotifier::get_item_users ($item, 1);
-
-          /* send event */
-          foreach ($users as $user)
-          {
-               $event = PluginAmqpNotifier::item_to_event ($item);
-               $event["component"] = $user["name"];
-               $event["output"]    = "Add item";
-
-               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-               {
-                    PluginAmqpBuffer::save_event ($event);
-               }
-          }
-     }
-
-     static function purge_item (CommonDBTM $item)
-     {
-          $users = PluginAmqpNotifier::get_item_users ($item, 1);
-
-          /* send event */
-          foreach ($users as $user)
-          {
-               $event = PluginAmqpNotifier::item_to_event ($item);
-               $event["component"] = $user["name"];
-               $event["output"]    = "Add item";
-
-               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-               {
-                    PluginAmqpBuffer::save_event ($event);
-               }
-          }
-     }
-
-     static function restore_item (CommonDBTM $item)
-     {
-          $users = PluginAmqpNotifier::get_item_users ($item, 1);
-
-          /* send event */
-          foreach ($users as $user)
-          {
-               $event = PluginAmqpNotifier::item_to_event ($item);
-               $event["component"] = $user["name"];
-               $event["output"]    = "Add item";
-
-               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
-               {
-                    PluginAmqpBuffer::save_event ($event);
-               }
-          }
      }
 
      static function statistics ()

@@ -71,16 +71,13 @@ function plugin_amqp_item_add ($item)
 {
      PluginAmqpNotifier::statistics ();
 
-     if ($item instanceof Ticket)
-     {
-          return PluginAmqpNotifier::add_item ($item);
-     }
-     else if ($item instanceof Ticket_User)
+     if ($item instanceof Ticket_User)
      {
           /* get user */
           $user = new User ();
           $user->getFromDB ($item->getField ('users_id'));
 
+          /* notify component */
           $event = array (
                "connector"       => "glpi",
                "connector_name"  => "glpi2amqp",
@@ -105,6 +102,18 @@ function plugin_amqp_item_add ($item)
           {
                PluginAmqpBuffer::save_event ($event);
           }
+
+          /* now send event *
+          $ticket = new Ticket ();
+          $ticket->getFromDB ($item->getField ('tickets_id'));
+
+          $event = PluginAmqpNotifier::item_to_event ($user->getField ("name"), $ticket);
+          $event['output'] = 'Add item #'.$ticket->getID ();
+
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }*/
      }
 }
 
@@ -114,7 +123,19 @@ function plugin_amqp_item_update ($item)
 
      if ($item instanceof Ticket)
      {
-          return PluginAmqpNotifier::update_item ($item);
+          $ufinder = new Ticket_User ();
+          $users   = $ufinder->find ("tickets_id = ".$item->getID ()." AND type = 1");
+
+          foreach ($users as $id => $row)
+          {
+               $event = PluginAmqpNotifier::item_to_event ($row['name'], $item);
+               $event['output'] = 'Update item #'.$item->getID ();
+
+               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+               {
+                    PluginAmqpBuffer::save_event ($event);
+               }
+          }
      }
 }
 
@@ -124,7 +145,19 @@ function plugin_amqp_item_delete ($item)
 
      if ($item instanceof Ticket)
      {
-          return PluginAmqpNotifier::delete_item ($item);
+          $ufinder = new Ticket_User ();
+          $users   = $ufinder->find ("tickets_id = ".$item->getID ()." AND type = 1");
+
+          foreach ($users as $id => $row)
+          {
+               $event = PluginAmqpNotifier::item_to_event ($row['name'], $item);
+               $event['output'] = 'Delete item #'.$item->getID ();
+
+               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+               {
+                    PluginAmqpBuffer::save_event ($event);
+               }
+          }
      }
 }
 
@@ -134,7 +167,19 @@ function plugin_amqp_item_purge ($item)
 
      if ($item instanceof Ticket)
      {
-          return PluginAmqpNotifier::purge_item ($item);
+          $ufinder = new Ticket_User ();
+          $users   = $ufinder->find ("tickets_id = ".$item->getID ()." AND type = 1");
+
+          foreach ($users as $id => $row)
+          {
+               $event = PluginAmqpNotifier::item_to_event ($row['name'], $item);
+               $event['output'] = 'Purge item #'.$item->getID ();
+
+               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+               {
+                    PluginAmqpBuffer::save_event ($event);
+               }
+          }
      }
 }
 
@@ -144,6 +189,18 @@ function plugin_amqp_item_restore ($item)
 
      if ($item instanceof Ticket)
      {
-          return PluginAmqpNotifier::restore_item ($item);
+          $ufinder = new Ticket_User ();
+          $users   = $ufinder->find ("tickets_id = ".$item->getID ()." AND type = 1");
+
+          foreach ($users as $id => $row)
+          {
+               $event = PluginAmqpNotifier::item_to_event ($row['name'], $item);
+               $event['output'] = 'Restore item #'.$item->getID ();
+
+               if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+               {
+                    PluginAmqpBuffer::save_event ($event);
+               }
+          }
      }
 }
