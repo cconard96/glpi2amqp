@@ -77,6 +77,11 @@ function plugin_amqp_item_add ($item)
           $user = new User ();
           $user->getFromDB ($item->getField ('users_id'));
 
+          if ($item->getField ('type') != 1)
+          {
+               return;
+          }
+
           /* notify component */
           $event = array (
                "connector"       => "glpi",
