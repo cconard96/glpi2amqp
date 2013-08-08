@@ -27,8 +27,8 @@ function plugin_amqp_install ()
                5672,
                'guest',
                'guest',
-               'myvhost',
-               'myvhost.events'
+               'canopsis',
+               'canopsis.events'
           )";
 
           $DB->query ($query) or die ('Error while creating default configuration: '.$DB->error ());
@@ -86,9 +86,8 @@ function plugin_amqp_item_add ($item)
                "event_type"      => "log",
                "timestamp"       => time (),
                "state"           => 0,
-               "output"          => "Client ".$user->getField ('name')." associated",
-               "long_output"     => "Client ".$user->getField ('name')." associated",
-               "display_name"    => "Client ".$user->getField ('name')." associated",
+               "output"          => "Client ".$user->getField ('name')." associated with ticket #".$item->getField ('tickets_id'),
+               "display_name"    => "Client ".$user->getField ('name')." associated with ticket #".$item->getField ('tickets_id'),
                "perf_data_array" => array (
                     array (
                          "metric" => "ticket",
@@ -102,6 +101,16 @@ function plugin_amqp_item_add ($item)
                     )
                )
           );
+
+          if (!PluginAmqpNotifier::sendAMQPMessage ($event))
+          {
+               PluginAmqpBuffer::save_event ($event);
+          }
+     }
+     else if ($item instanceof Ticket)
+     {
+          $event = PluginAmqpNotifier::item_to_event ("notifier", $item);
+          $event['output'] = 'Add item #'.$item->getID ();
 
           if (!PluginAmqpNotifier::sendAMQPMessage ($event))
           {
