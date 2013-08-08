@@ -18,6 +18,8 @@ In the GLPI root directory :
 
     # cd plugins
     # git clone https://github.com/linkdd/glpi2amqp.git amqp
+    # cd amqp
+    # php5 front/install.php
 
 Then, in the plugins configuration of GLPI, install and activate the plugin.
 
